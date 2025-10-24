@@ -91,8 +91,8 @@ const StudentAdmissionForm = () => {
 
     // Filter options based on selections AND visibility
     const getVisibleOptions = (key) => {
-        // ✅ Check if visibility is explicitly TRUE
-        if (!academicSetup?.[key] || academicSetup?.visibility?.[key] !== true) return [];
+        // ✅ Check if visibility is truthy (following ClassAndMore pattern)
+        if (!academicSetup?.[key] || !academicSetup?.visibility?.[key]) return [];
         return (academicSetup[key] || []).filter(item => !item.isHidden);
     };
 
@@ -134,12 +134,12 @@ const StudentAdmissionForm = () => {
     // ✅ Count visible academic fields for grid layout
     const visibleFieldCount = useMemo(() => {
         return [
-            academicSetup.visibility?.campuses === true,
-            academicSetup.visibility?.departments === true,
-            academicSetup.visibility?.shifts === true,
-            academicSetup.visibility?.classes === true,
-            academicSetup.visibility?.groups === true,
-            academicSetup.visibility?.sections === true,
+            academicSetup.visibility?.campuses,
+            academicSetup.visibility?.departments,
+            academicSetup.visibility?.shifts,
+            academicSetup.visibility?.classes,
+            academicSetup.visibility?.groups,
+            academicSetup.visibility?.sections,
         ].filter(Boolean).length;
     }, [academicSetup.visibility]);
 
@@ -215,8 +215,8 @@ const StudentAdmissionForm = () => {
                             </select>
                         </FormInput>
 
-                        {/* ✅ Conditional Rendering - Only show if visibility is TRUE */}
-                        {academicSetup.visibility?.campuses === true && (
+                        {/* ✅ Conditional Rendering - Only show if visibility is truthy */}
+                        {academicSetup.visibility?.campuses && (
                             <FormInput label="Campus" id="campusId">
                                 <select name="campusId" value={formData.campusId} onChange={handleChange} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500">
                                     <option value="">Select Campus</option>
@@ -225,34 +225,34 @@ const StudentAdmissionForm = () => {
                             </FormInput>
                         )}
 
-                        {academicSetup.visibility?.departments === true && (
+                        {academicSetup.visibility?.departments && (
                             <FormInput label="Department" id="departmentId">
-                                <select name="departmentId" value={formData.departmentId} onChange={handleChange} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500" disabled={academicSetup.visibility?.campuses === true && !formData.campusId}>
+                                <select name="departmentId" value={formData.departmentId} onChange={handleChange} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500" disabled={academicSetup.visibility?.campuses && !formData.campusId}>
                                     <option value="">Select Department</option>
                                     {availableDepartments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
                                 </select>
                             </FormInput>
                         )}
 
-                        {academicSetup.visibility?.shifts === true && (
+                        {academicSetup.visibility?.shifts && (
                              <FormInput label="Shift" id="shiftId">
-                                <select name="shiftId" value={formData.shiftId} onChange={handleChange} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500" disabled={academicSetup.visibility?.departments === true && !formData.departmentId}>
+                                <select name="shiftId" value={formData.shiftId} onChange={handleChange} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500" disabled={academicSetup.visibility?.departments && !formData.departmentId}>
                                     <option value="">Select Shift</option>
                                     {availableShifts.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                                 </select>
                             </FormInput>
                         )}
 
-                        {academicSetup.visibility?.classes === true && (
+                        {academicSetup.visibility?.classes && (
                             <FormInput label="Class" id="classId" required>
-                                 <select name="classId" value={formData.classId} onChange={handleChange} required className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500" disabled={academicSetup.visibility?.shifts === true && !formData.shiftId}>
+                                 <select name="classId" value={formData.classId} onChange={handleChange} required className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500" disabled={academicSetup.visibility?.shifts && !formData.shiftId}>
                                     <option value="">Select Class</option>
                                     {availableClasses.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                                 </select>
                             </FormInput>
                         )}
 
-                        {academicSetup.visibility?.groups === true && (
+                        {academicSetup.visibility?.groups && (
                              <FormInput label="Group" id="groupId">
                                 <select name="groupId" value={formData.groupId} onChange={handleChange} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500" disabled={!formData.classId}>
                                     <option value="">Select Group</option>
@@ -261,7 +261,7 @@ const StudentAdmissionForm = () => {
                             </FormInput>
                         )}
 
-                        {academicSetup.visibility?.sections === true && (
+                        {academicSetup.visibility?.sections && (
                             <FormInput label="Section" id="sectionId">
                                 <select name="sectionId" value={formData.sectionId} onChange={handleChange} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500" disabled={!formData.groupId}>
                                     <option value="">Select Section</option>
